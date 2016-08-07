@@ -1,0 +1,101 @@
+[こちら][ref1]を参考
+
+- git status
+  - リポジトリの状態を確認する
+
+- git add
+  - ファイル・ディレクトリをインデックスに登録する.
+
+- git commit
+  - -m:メッセージを追加する.
+  - -a:変更されたファイルを検出してインデックスに登録する.
+
+- git branch
+  - ブランチに対して以下の操作を行う
+    - ブランチの作成
+    ```
+    git branch [branch name]```
+    - ブランチ一覧の表示
+    ```
+    git branch```
+    - 指定したブランチを削除
+    ```
+    git branch -d [name]```
+
+
+- git checkout
+  - ローカルリポジトリのブランチを切り替える
+    ```
+    git checkout [branch-name]
+    ```
+
+- git remote
+  - リモートリポジトリを操作する.
+    - リモートリポジトリの一覧を表示
+    ```
+    git remote```
+    - リモートリポジトリの詳細な一覧を表示
+    ```
+    git remote -v```
+    - リモートリポジトリを追加
+    ```
+    git remote add [name] [url]```
+    - 指定したリモートリポジトリのURLを変更
+    ```
+    git remote set-url [name] [url]
+    ```
+    - 指定したリモートリポジトリの名称を変更
+    ```
+    git remote <oldname> <newname>
+    ```
+    - リモートリポジトリを削除
+    ```
+    git remote rm [name]```
+
+- git reset
+  - ローカルリポジトリのコミットを取り消す.
+    ```
+    git reset -soft HEAD^```
+
+- git push
+  - リモートリポジトリに変更を反映する.
+    - ブランチを作成する
+      ```
+      git push <repositry> <branch名>
+      ```
+
+
+- git marge
+  - 現在のブランチに対して他のブランチの行った変更を取り込む
+  - 以下の場合はbug-fixブランチをmasterブランチへマージする.
+    ```
+    git checkout master
+    git marge bug-fix
+    ```
+
+- git pull
+  - リモートリポジトリの変更を取り込む.
+  - 以下の例では、ローカルリポジトリのmasterブランチに
+  リモートリポジトリ:origin のmasterブランチをmargeする.
+    ```
+    git checkout master
+    git pull origin master
+    ```
+
+  - git log
+    - ログを見る. -n で表示数を変更できる.
+    ```
+    git log -n10```
+
+  - git grep
+    - リポジトリ内のファイルの内容から検索する.
+      ```
+      git grep "検索する文字列"
+      ```
+
+  - git clone
+    - 既存のリモートリポジトリをローカルにコピーする
+    ```
+    git clone [url]```
+
+[ref1]:(htttp://techacademy.jp/magazine/6235)

@@ -1,0 +1,47 @@
+0. ユーザー登録する.
+
+  git config --global user.email "email"
+  git config --global user.name "UserName"
+
+1. GitHubにリポジトリを作成する
+
+2. ローカルPC上にローカルリポジトリを作成する.
+  - mkdir sample
+  - cd sample
+  - git init
+
+  `これでsampleフォルダがローカルリポジトリに登録される`
+
+(2. あるいはリモートリポジトリをコピーする)
+  - git clone リモートリポジトリのurl
+
+
+3. インデックスにファイルを追加する
+  - 例えば以下のようなファイルがあったとする
+  - test.html
+    ```
+    <html>
+    <head>テスト！</head>
+    <body>
+    HELLOW WORLD !
+    </body>
+    </html>
+    ```
+ - 以下のコマンドで登録する
+    > git add test.html
+
+4. 変更をローカルリポジトリにコミットする
+  > git commit -m "コミットの理由"
+
+  > git status  でファイルが追加されているかどうかの確認ができる
+
+5. リモートリポジトリに反映させる.
+  - 反映させる前にリモートリポジトリの情報を追加する.
+  > git remote add origin リポジトリのurl
+  - 変更する場合は以下
+  > git remote set-url reponame repoUrl
+
+6. ローカルリポジトリをpushしてリモートリポジトリへ反映させる.
+  > git push origin master
+
+  - originリポジトリのmasterブランチにpushする.
