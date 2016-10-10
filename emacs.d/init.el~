@@ -1,0 +1,96 @@
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+;;jedi
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
+
+;;テーマ
+(load-theme 'misterioso t)
+
+;;--------------------------------------------------------------------
+;;--------------------------------------------------------------------
+
+;; ------------
+;;###general###
+;; ------------
+
+;;言語を日本語に設定
+(set-language-environment 'Japanese)
+;;フォントを設定
+(prefer-coding-system 'utf-8)
+;;ウィンドゥ透過設定(普段 移動時[%])
+(set-frame-parameter (selected-frame) 'alpha'(80 80))
+;; ウィンドウ設定
+(if window-system (progn
+  (setq initial-frame-alist '((width . 100) (height . 60) (top . 50)))
+  (set-background-color "Black")
+  (set-foreground-color "White")
+  (set-cursor-color "Gray")
+))
+;;行番号を常に表示させる
+(global-linum-mode t)
+;;メニューバー/ツールバーを消す
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+;;対応する()を光らせる
+(show-paren-mode 1)
+;;行末の空白を表示
+(setq-default show-trailing-whitespace t)
+;;--位置--
+;;カーソルの位置が何文字目、何行目かを表示する
+(column-number-mode t)
+;(line-number-mode t)
+;;--タブキー--
+;;オートインデントの設定
+(add-hook 'python-mode-hook' (lambda ()
+			       (define-key python-mode-map "\C-m" newline-and-indent)))
+;;タブ幅の設定
+(add-hook 'python-mode-hook
+    '(lambda ()
+        (setq python-indent 4)
+        (setq indent-tabs-mod nil)
+        (define-key (current-local-map) "\C-h" 'python-backspace)
+    ))(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+;;Pythonにて1行80文字を超えた時にハイライト
+(add-hook 'python-mode-hook
+  (lambda ()
+    (font-lock-add-keywords nil
+      '(("^[^\n]\\{80\\}\\(.*\\)$" 1 font-lock-warning-face t)))))
+
+;; シフト + 矢印で範囲選択
+1(setq pc-select-selection-keys-only t)
+(pc-selection-mode 1)
+;; フォント設定
+(if (eq window-system 'mac) (require 'carbon-font))
+(fixed-width-set-fontset "hirakaku_w3" 10)
+(setq fixed-width-rescale nil)
+
+;;テーマの変更(M-x customize-themes)
+(set-face-background 'default "#303030")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(custom-enabled-themes (quote (tango-dark))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+(put 'upcase-region 'disabled nil)
+
+;;----------------------------
+
+;;Don't make backupfile
+;;*.~
+(setq make-backup-files nil)
+;;.#*
+(setq auto-save-default nil)

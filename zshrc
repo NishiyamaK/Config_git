@@ -1,6 +1,8 @@
-#大学内
-export http_proxy=proxy.nagaokaut.ac.jp:8080
-export https_proxy=proxy.nagaokaut.ac.jp:8080
+#jupyter notebook
+#export PATH=/home/nishiyama/anaconda3/bin:$PATH
+
+# Capslock changed Ctrl
+setxkbmap -option ctrl:nocaps
 
 # users generic .zshrc file for zsh(1)
 
@@ -22,64 +24,122 @@ esac
 #
 autoload colors
 colors
+
+
+#########################
+#         PROMPT        #
+#########################
+# PROMPT:default
+# PROMPT2:more 2line
+# SPROMPT:
+# RPROMPT:left side
+# root user
 case ${UID} in
 0)
     PROMPT="%{${fg[cyan]}%}$(echo ${HOST%%.*}) %B%{${fg[red]}%}%/#%{${reset_color}%}%b "
     PROMPT2="%B%{${fg[cyan]}%}%_#%{${reset_color}%}%b "
     SPROMPT="%B%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
-    ;;
+  ;;
+# 一般ユーザー時
 *)
     PROMPT="%B%{${fg[cyan]}%}%n:%c%#%{${reset_color}%}%b "
     PROMPT2="%{${fg[cyan]}%}%n:%c%B%#%{${reset_color}%}%b "
-    RPROMPT="%B%{${fg[magenta]}%}[%d]%{${reset_color}%}%b"
+    RPROMPT="%B%{${fg[green]}%}[%d]%{${reset_color}%}%b"
     SPROMPT="%B%{${fg[red]}%}%r is correct? [n,y,a,e]:%{${reset_color}%}%b "
     [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
         PROMPT="%B%{${fg[cyan]}%}$(echo ${HOST%%.*} | tr '[a-z]' '[A-Z]')%b ${PROMPT2}"
     ;;
 esac
 
+#########################
+#         PROMPT        #
+#########################
+
+
+#############################
+#         auto comp         #
+#############################
 # auto directory pushd that you can get dirs list by cd -[tab]
 #
 setopt auto_pushd
 
 # command correct edition before each completion attempt
-#
 setopt correct
 
 # compacked complete list display
-#
 setopt list_packed
 
 # no remove postfix slash of command line
-#
 setopt noautoremoveslash
 
 # no beep sound when complete list displayed
-#
 setopt nolistbeep
 
-# 補完候補をハイライト
 zstyle ':completion:*:default' menu select=1
 
-# 変数の添字を補完
 zstyle ':completion:*:-subscript-:*' tag-order indexes parameters
 
-#補完に関するオプション
-setopt auto_param_slash      # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
-setopt mark_dirs             # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
-setopt list_types            # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
-setopt auto_menu             # 補完キー連打で順に補完候補を自動で補完
-setopt auto_param_keys       # カッコの対応などを自動的に補完
-setopt interactive_comments  # コマンドラインでも # 以降をコメントと見なす
-setopt magic_equal_subst     # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+setopt auto_param_slash
+setopt mark_dirs
+setopt list_types
+setopt auto_menu
+setopt auto_param_keys
+setopt interactive_comments
+setopt magic_equal_subst
 
-setopt complete_in_word      # 語の途中でもカーソル位置で補完
-setopt always_last_prompt    # カーソル位置は保持したままファイル名一覧を順次その場で表示
+setopt complete_in_word
+setopt always_last_prompt
 
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # 補完時に大文字小文字を区別しない
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-## Keybind configuration
+## Completion configuration
 #
+fpath=(${HOME}/.zsh/functions/Completion ${fpath})
+autoload -U compinit
+compinit
+
+
+## zsh editor
+#
+autoload zed
+
+
+## Prediction configuration
+#
+#autoload predict-on
+#predict-off
+
+#cd
+DIRSTACKSIZE=100
+setopt AUTO_PUSHD
+
+autoload -Uz compinit && compinit
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+zstyle ':completion:*:descriptions' format '%BCompleting%b %U%d%u'
+
+## Alias configuration
+#
+# expand aliases before completing
+#
+setopt complete_aliases     # aliased ls needs if file/dir completions work
+
+alias where="command -v"
+alias j="jobs -l"
+
+## load user .zshrc configuration file
+#
+[ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
+
+#############################
+#         auto comp         #
+#############################
+
+
+#############################
+#          Keybind          #
+#############################
 # emacs like keybind (e.x. Ctrl-a gets to line head and Ctrl-e gets
 #   to end) and something additions
 #
@@ -101,6 +161,9 @@ bindkey "\\en" history-beginning-search-forward-end
 #
 bindkey "\e[Z" reverse-menu-complete
 
+#############################
+#          Keybind          #
+#############################
 
 ## Command history configuration
 #
@@ -110,55 +173,10 @@ SAVEHIST=50000
 setopt hist_ignore_dups     # ignore duplication command history list
 setopt share_history        # share command history data
 
-
-## Completion configuration
-#
-fpath=(${HOME}/.zsh/functions/Completion ${fpath})
-autoload -U compinit
-compinit
-
-
-## zsh editor
-#
-autoload zed
-
-
-## Prediction configuration
-#
-#autoload predict-on
-#predict-off
-
-#cd補完
-DIRSTACKSIZE=100
-setopt AUTO_PUSHD
-
-autoload -Uz compinit && compinit
-
-zstyle ':completion:*' menu select
-zstyle ':completion:*:cd:*' ignore-parents parent pwd
-zstyle ':completion:*:descriptions' format '%BCompleting%b %U%d%u'
-
-
-## Alias configuration
-#
-# expand aliases before completing
-#
-setopt complete_aliases     # aliased ls needs if file/dir completions work
-
-alias where="command -v"
-alias j="jobs -l"
-
-# lsに色をつける
-case "${OSTYPE}" in
-freebsd*|darwin*)
-    alias ls="ls -G -wX"
-    ;;
-linux*)
-    alias ls="ls --color -X"
-    ;;
-esac
-
-# manに色をつける
+###########################
+#         Colors          #
+###########################
+# man
 export MANPAGER='less -R'
 man() {
     env \
@@ -172,11 +190,8 @@ man() {
         man "$@"
 }
 
-# gitに色をつける
+# git
 git config --global color.ui auto
-
-
-
 alias la="ls -a"
 alias lf="ls -F"
 alias ll="ls -l"
@@ -197,11 +212,6 @@ alias top="htop"
 alias gs="git status"
 alias gb="git branch"
 
-# auto change directory
-# aliasでのls設定よりも後に書く.
-setopt auto_cd
-function chpwd() { ls }
-cdpath=(.. ~ ~/src)
 
 ## terminal configuration
 #
@@ -211,48 +221,59 @@ screen)
     ;;
 esac
 
-case "${TERM}" in
-xterm|xterm-color)
-    export LSCOLORS=Cxfxcxdxbxegedabagacad
-    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors 'di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+# ls color
+case "${OSTYPE}" in
+freebsd*|darwin*)
+    alias ls="ls -G -wX"
     ;;
-kterm-color)
-    stty erase '^H'
-    export LSCOLORS=Cxfxcxdxbxegedabagacad
-    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors ''
-    ;;
-kterm)
-    stty erase '^H'
-    ;;
-cons25)
-    unset LANG
-    export LSCOLORS=ExFxCxdxBxegedabagacad
-    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors ''
-    ;;
-jfbterm-color)
-    export LSCOLORS=gxFxCxdxBxegedabagacad
-    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-    zstyle ':completion:*' list-colors ''
+linux*)
+    alias ls="ls --color -X"
     ;;
 esac
 
-# set terminal title including current directory
+# ls color2
+export LSCOLORS=Cxfxcxdxbxegedabagacad
+export LS_COLORS='di=32;04;01:ln=36;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+zstyle ':completion:*' list-colors 'di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+
+# auto change directory
 #
-case "${TERM}" in
-xterm|xterm-color|kterm|kterm-color)
-    precmd() {
-        echo -ne "\033]0;${USER}@${HOST%%.*}:${PWD}\007"
-    }
-    ;;
-esac
+setopt auto_cd
+function chpwd() { ls }
+cdpath=(.. ~ ~/src)
 
 
-## load user .zshrc configuration file
-#
-[ -f ${HOME}/.zshrc.mine ] && source ${HOME}/.zshrc.mine
+#xterm|xterm-color)
+#case "${TERM}" in
+#    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+#    export LSCOLORS=Cxfxcxdxbxegedabagacad
+#    zstyle ':completion:*' list-colors 'di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+#    ;;
+#kterm-color)
+#    stty erase '^H'
+#    export LSCOLORS=Cxfxcxdxbxegedabagacad
+#    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+#    zstyle ':completion:*' list-colors ''
+#    ;;
+#kterm)
+#    stty erase '^H'
+#    ;;
+#cons25)
+#    unset LANG
+#    export LSCOLORS=ExFxCxdxBxegedabagacad
+#    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+#    zstyle ':completion:*' list-colors ''
+#    ;;
+#jfbterm-color)
+#    export LSCOLORS=gxFxCxdxBxegedabagacad
+#    export LS_COLORS='di=32;04;01:ln=34;04;01:so=32:pi=31:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+#    zstyle ':completion:*' list-colors ''
+#    ;;
+#esac
+
+###########################
+#         colors          #
+###########################
 
 ## fullpass print on the tab bar
 precmd () {
@@ -261,6 +282,6 @@ precmd () {
 }
 
 #pyenv
-#export PYENV_ROOT= pyenvのディレクトリ
+#export PYENV_ROOT= pyenv dir
 #export PATH=$PYENV_ROOT/bin:$PATH
 #eval "$(pyenv init -)"
